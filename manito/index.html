@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><script id="bench-gate-loader" src="/bench-gate.js"></script><meta name="bench-release" content="manito 1.0.0+adaf048" id="bench-release-meta"><script id="bench-beacon-loader" src="/bench-beacon.js" defer></script>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Manito Park</title>
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      /* These styles make the body full-height */
+      html,
+      body {
+        height: 100%;
+      }
+      /* These styles disable body scrolling if you are using <ScrollView> */
+      body {
+        overflow: hidden;
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
+    </style>
+  <meta name="description" content="Explore Manito Park: play the Lost Zoo history game, get step-free walking directions, and see real Friends of Manito events.">
+<link rel="preload" href="/_expo/static/css/leaflet-a11497f809dd761cf9840985b442ed44.css" as="style"><link rel="stylesheet" href="/_expo/static/css/leaflet-a11497f809dd761cf9840985b442ed44.css"></head>
+
+  <body>
+    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <!-- The root element for your Expo app. -->
+    <div id="root"></div>
+  <script src="/_expo/static/js/web/AppEntry-25cd968285e64dfea9bd4145cf81d6e3.js" defer></script>
+<script id="bench-release">window.BENCH_RELEASE="manito 1.0.0+adaf048";</script>
+<a id="bench-release-pill" href="/releases.html#manito" title="release notes" style="position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:2147483000;font:11px/1 ui-monospace,Menlo,Consolas,monospace;color:#9aa4b2;background:rgba(20,23,28,.72);border:1px solid #2a3039;border-radius:999px;padding:5px 8px;text-decoration:none;opacity:.85">v1.0.0</a><!-- Public demo feedback bubble. Injected into every page of the demo site by
+     publish-demos-site.sh. Posts to Netlify Forms (static host, no backend, nothing
+     touching the Bench or the tailnet). Submissions land in Netlify → Forms.
+     The hidden <form> below is what Netlify parses at deploy time to register the
+     form; the visible UI posts to "/" by AJAX with the same field names. -->
+<form name="demo-feedback" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="form-name" value="demo-feedback">
+  <input type="text" name="bot-field">
+  <input type="text" name="demo">
+  <input type="text" name="kind">
+  <input type="text" name="release">
+  <input type="text" name="contact">
+  <textarea name="message"></textarea>
+</form>
+<div id="bench-fb"></div>
+<script>
+(function () {
+  if (window.__benchFb) return; window.__benchFb = 1;
+  var Z = 2147483000, open = false, sending = false;
+  // Everyone shares one passcode, so a note is anonymous unless the tester says who they are.
+  // Hand each person a link like  https://…/?who=jane  and the name rides along automatically;
+  // it is remembered on that device, and they can still overwrite it in the box.
+  var WHO_KEY = 'bench-who';
+  var who = '';
+  try {
+    var q = new URLSearchParams(location.search).get('who');
+    if (q) { who = q.slice(0, 40); localStorage.setItem(WHO_KEY, who); }
+    else { who = localStorage.getItem(WHO_KEY) || ''; }
+  } catch (e) {}
+
+  var demo = (function () {
+    var p = location.pathname;
+    if (p.indexOf('/manito') === 0) return 'Manito Park App';
+    if (p.indexOf('/rover') === 0) return 'Rover Bot';
+    if (p.indexOf('/scam') === 0) return 'Voice AI Scam Filter';
+    return 'Demos home';
+  })();
+
+  var css = document.createElement('style');
+  css.textContent =
+    '#bfb-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:' + Z + ';' +
+      'width:54px;height:54px;border-radius:50%;border:0;background:#c9a24b;color:#14171c;font-size:24px;' +
+      'line-height:1;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.45)}' +
+    '#bfb-btn:active{transform:scale(.95)}' +
+    '#bfb-wrap{position:fixed;inset:0;z-index:' + (Z + 1) + ';background:rgba(0,0,0,.6);display:flex;' +
+      'align-items:flex-end;justify-content:center;padding:16px}' +
+    '#bfb-card{width:100%;max-width:430px;background:#12161c;color:#e6e8ea;border:1px solid #262b33;' +
+      'border-radius:16px;padding:18px;max-height:88vh;overflow:auto;' +
+      'font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}' +
+    '#bfb-card h3{margin:0 0 3px;font-size:18px}' +
+    '#bfb-card p.sub{margin:0 0 13px;font-size:13px;color:#9aa4b2}' +
+    '#bfb-card label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;' +
+      'color:#9aa4b2;margin:11px 0 4px}' +
+    '#bfb-card input,#bfb-card textarea,#bfb-card select{width:100%;background:#0d1014;color:#e6e8ea;' +
+      'border:1px solid #262b33;border-radius:10px;padding:11px 12px;font-size:16px}' +
+    '#bfb-card textarea{min-height:104px;resize:vertical}' +
+    '#bfb-row{display:flex;gap:9px;margin-top:14px}' +
+    '#bfb-row button{flex:1;padding:12px;border-radius:10px;font:600 14px system-ui,sans-serif;cursor:pointer}' +
+    '#bfb-cancel{background:transparent;color:#9aa4b2;border:1px solid #262b33}' +
+    '#bfb-send{background:#c9a24b;color:#14171c;border:0}' +
+    '#bfb-msg{font-size:13px;margin-top:10px;color:#9aa4b2}';
+  document.head.appendChild(css);
+
+  var btn = document.createElement('button');
+  btn.id = 'bfb-btn'; btn.type = 'button';
+  btn.setAttribute('aria-label', 'Send feedback');
+  btn.textContent = '💬';
+  document.body.appendChild(btn);
+
+  function close() { var w = document.getElementById('bfb-wrap'); if (w) w.remove(); open = false; }
+
+  btn.onclick = function () {
+    if (open) return close();
+    open = true;
+    var wrap = document.createElement('div');
+    wrap.id = 'bfb-wrap';
+    wrap.innerHTML =
+      '<div id="bfb-card">' +
+        '<h3>Tell us what you found</h3>' +
+        '<p class="sub">' + demo + ' — bugs, confusing bits, or things you wish it did.</p>' +
+        '<label>What kind of note is this?</label>' +
+        '<select id="bfb-kind">' +
+          '<option>Something is broken</option>' +
+          '<option>Something is confusing</option>' +
+          '<option>Idea / feature request</option>' +
+          '<option>It worked well</option>' +
+        '</select>' +
+        '<label>What happened?</label>' +
+        '<textarea id="bfb-text" placeholder="As specific as you can — what you tapped, what you expected, what you got."></textarea>' +
+        '<label>Who is this? (so we can follow up)</label>' +
+        '<input id="bfb-contact" autocomplete="off" placeholder="so we know who this came from">' +
+        '<div id="bfb-row"><button id="bfb-cancel" type="button">Cancel</button>' +
+        '<button id="bfb-send" type="button">Send</button></div>' +
+        '<div id="bfb-msg"></div>' +
+      '</div>';
+    document.body.appendChild(wrap);
+    wrap.addEventListener('click', function (e) { if (e.target === wrap) close(); });
+    document.getElementById('bfb-cancel').onclick = close;
+    if (who) document.getElementById('bfb-contact').value = who;
+    document.getElementById('bfb-text').focus();
+
+    document.getElementById('bfb-send').onclick = function () {
+      if (sending) return;
+      var text = document.getElementById('bfb-text').value.trim();
+      var msg = document.getElementById('bfb-msg');
+      if (text.length < 4) { msg.textContent = 'Add a little more detail first.'; return; }
+      sending = true; msg.textContent = 'Sending…';
+      var body = new URLSearchParams({
+        'form-name': 'demo-feedback',
+        'demo': demo,
+        'kind': document.getElementById('bfb-kind').value,
+        'release': String(window.BENCH_RELEASE || '').slice(0, 60),   // "phonics 1.0.0+eb48367", stamped by publish-demos-site.sh
+        'contact': document.getElementById('bfb-contact').value.slice(0, 120),
+        'message': text.slice(0, 4000)
+      }).toString();
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
+        .then(function (r) {
+          sending = false;
+          if (!r.ok) throw new Error(r.status);
+          document.getElementById('bfb-card').innerHTML =
+            '<h3>Thank you — got it.</h3><p class="sub">That goes straight to the two of us building this.</p>' +
+            '<div id="bfb-row"><button id="bfb-send" type="button">Close</button></div>';
+          document.getElementById('bfb-send').onclick = close;
+        })
+        .catch(function () {
+          sending = false;
+          msg.textContent = 'Could not send — check your connection and try again.';
+        });
+    };
+  };
+})();
+</script></body>
+</html>
